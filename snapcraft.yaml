@@ -1,4 +1,4 @@
-name: core18
+name: core18-ros2-james
 version: 18
 summary: Runtime environment based on Ubuntu 18.04
 description: |
@@ -26,3 +26,50 @@ parts:
       unset LD_LIBRARY_PATH;
       export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin";
       snapcraftctl prime
+
+  ppa:
+    plugin: nil
+    override-build: |
+      sudo apt update && sudo apt install curl
+      curl http://repo.ros2.org/repos.key | sudo apt-key add -
+      sudo sh -c 'echo "deb [arch=amd64,arm64] http://repo.ros2.org/ubuntu/main `lsb_release -cs` main" > /etc/apt/sources.list.d/ros2-latest.list'
+      sudo apt update
+    prime: [-*]
+
+  ros-base:
+    plugin: nil
+    stage-packages:
+      - ros-bouncy-ros-base
+    stage:
+      - -lib/x86_64-linux-gnu/libpcre.so.3                                                                                            
+      - -usr/bin/py3clean
+      - -usr/bin/py3compile
+      - -usr/bin/pydoc3.6
+      - -usr/lib/python3.6/base64.py
+      - -usr/lib/python3.6/cProfile.py
+      - -usr/lib/python3.6/cgi.py
+      - -usr/lib/python3.6/encodings/rot_13.py
+      - -usr/lib/python3.6/keyword.py
+      - -usr/lib/python3.6/lib2to3/pgen2/token.py
+      - -usr/lib/python3.6/pdb.py
+      - -usr/lib/python3.6/platform.py
+      - -usr/lib/python3.6/profile.py
+      - -usr/lib/python3.6/pydoc.py
+      - -usr/lib/python3.6/quopri.py
+      - -usr/lib/python3.6/smtpd.py
+      - -usr/lib/python3.6/smtplib.py
+      - -usr/lib/python3.6/symbol.py
+      - -usr/lib/python3.6/tabnanny.py
+      - -usr/lib/python3.6/tarfile.py
+      - -usr/lib/python3.6/test/pystone.py
+      - -usr/lib/python3.6/test/regrtest.py
+      - -usr/lib/python3.6/timeit.py
+      - -usr/lib/python3.6/trace.py
+      - -usr/lib/python3.6/uu.py
+      - -usr/lib/python3.6/webbrowser.py
+      - -usr/lib/python3.7/lib2to3/pgen2/token.py
+      - -usr/share/python3/py3versions.py
+
+    after:
+      - ppa
+      - boostrap
